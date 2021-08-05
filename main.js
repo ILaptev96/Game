@@ -2,7 +2,7 @@ class MyGame {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.enemies = []
+        this.points = []
     }
 
     render() {
@@ -60,34 +60,85 @@ class Player {
     }
 }
 
-class Point {
+/*
+// legacy
+class Point  {
+
     constructor() {
-      
+        this.class = 'point'
     }
 
     static create(oData) {
         this.x = Math.floor(Math.random() * (oData.x - 0)) + 0;
         this.y = Math.floor(Math.random() * (oData.y - 0)) + 0;
-        oData.enemies.push({x: this.x, y: this.y})
-        document.querySelector(`#row${this.x}cell${this.y}`).classList.add("point")
+        oData.points.push({ x: this.x, y: this.y })
+        document.querySelector(`#row${this.x}cell${this.y}`).classList.add(this.class)
     }
 
     static remove() {
-        document.querySelector(`#row${this.x}cell${this.y}`).classList.remove("point")
+        document.querySelector(`#row${this.x}cell${this.y}`).classList.remove(this.class)
     }
 }
 
+class Enemy   {
+
+    constructor() {
+     
+    }
+
+  static create(oData) {
+        this.x = Math.floor(Math.random() * (oData.x - 0)) + 0;
+        this.y = Math.floor(Math.random() * (oData.y - 0)) + 0;
+        oData.enemies.push({ x: this.x, y: this.y })
+        document.querySelector(`#row${this.x}cell${this.y}`).classList.add("enemy")
+    }
+
+    static remove() {
+        document.querySelector(`#row${this.x}cell${this.y}`).classList.remove("enemy")
+    } 
+}
+ */
+
+class Point {
+
+    constructor(oData, type) {
+        this.type = type
+        this.oData = oData
+    }
+
+    create() {
+        this.x = Math.floor(Math.random() * (this.oData.x - 0)) + 0;
+        this.y = Math.floor(Math.random() * (this.oData.y - 0)) + 0;
+        this.oData.points.push({ x: this.x, y: this.y, type: this.type })
+        document.querySelector(`#row${this.x}cell${this.y}`).classList.add(this.type)
+    }
+
+    remove() {
+        document.querySelector(`#row${this.x}cell${this.y}`).classList.remove(this.type)
+        let pointIndex = oGame.points.findIndex(arr => arr.x === this.x && arr.y === this.y && arr.type === this.type);
+        oGame.points.splice(pointIndex, 1)
+    }
+}
+
+class Enemy extends Point {
+    lose() {
+        alert("Lose")
+    }
+}
+
+
 let oGame = new MyGame(10, 10)
+let oPlayer = new Player(oGame)
+let oPoint = new Point(oGame, 'point')
+let oEnemy = new Enemy(oGame, 'enemy')
+
+oGame.player = oPlayer
 
 oGame.render()
-
-let oPlayer = new Player(oGame)
-oGame.player = oPlayer
 oPlayer.highlightCell()
-Point.create(oGame)
-/* let Point = new Point(oGame)
-Point.highlightCell()
- */
+oPoint.create()
+oEnemy.create()
+
 window.addEventListener("keyup", function (event) {
     oPlayer.unhighlightCell()
     switch (event.key) {
@@ -105,14 +156,14 @@ window.addEventListener("keyup", function (event) {
             break
     }
     oPlayer.highlightCell()
-    if(oPlayer.currentX == Point.x && oPlayer.currentY == Point.y) {
-      //  Point.unhighlightCell()
-       
-  //    oGame.enemies.findIndex( function( currentValue, index, arr ) ); 
-      Point.remove()
-      Point.create(oGame)
-      console.log(oGame.enemies)
-      //  document.querySelector('#points').innerHTML = oPlayer.points++
+
+    if (oPlayer.currentX == oPoint.x && oPlayer.currentY == oPoint.y) {
+        oPoint.remove()
+        oPoint.create()
+     //   console.log(oGame.points)
+    }
+    if (oPlayer.currentX == oEnemy.x && oPlayer.currentY == oEnemy.y) {
+        oEnemy.lose()
     }
 })
 

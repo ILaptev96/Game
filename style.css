@@ -17,6 +17,10 @@
     background-color: green;
 }
 
+.enemy {
+    background-color: red;
+}
+
 #points {
     font-size: 25px;
     font-weight: 500;

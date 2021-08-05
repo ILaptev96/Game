@@ -2,6 +2,7 @@ class MyGame {
     constructor(x, y) {
         this.x = x
         this.y = y
+        this.counter = 0
         this.points = []
     }
 
@@ -50,7 +51,7 @@ class Player {
     }
 
     moveLeft() {
-        if (this.currenty == 0) return;
+        if (this.currentY == 0) return;
         this.currentY -= 1
     }
 
@@ -60,47 +61,8 @@ class Player {
     }
 }
 
-/*
-// legacy
-class Point  {
 
-    constructor() {
-        this.class = 'point'
-    }
-
-    static create(oData) {
-        this.x = Math.floor(Math.random() * (oData.x - 0)) + 0;
-        this.y = Math.floor(Math.random() * (oData.y - 0)) + 0;
-        oData.points.push({ x: this.x, y: this.y })
-        document.querySelector(`#row${this.x}cell${this.y}`).classList.add(this.class)
-    }
-
-    static remove() {
-        document.querySelector(`#row${this.x}cell${this.y}`).classList.remove(this.class)
-    }
-}
-
-class Enemy   {
-
-    constructor() {
-     
-    }
-
-  static create(oData) {
-        this.x = Math.floor(Math.random() * (oData.x - 0)) + 0;
-        this.y = Math.floor(Math.random() * (oData.y - 0)) + 0;
-        oData.enemies.push({ x: this.x, y: this.y })
-        document.querySelector(`#row${this.x}cell${this.y}`).classList.add("enemy")
-    }
-
-    static remove() {
-        document.querySelector(`#row${this.x}cell${this.y}`).classList.remove("enemy")
-    } 
-}
- */
-
-class Point {
-
+class Dot {
     constructor(oData, type) {
         this.type = type
         this.oData = oData
@@ -120,9 +82,16 @@ class Point {
     }
 }
 
-class Enemy extends Point {
+class Point extends Dot {
+    counter() {
+        this.oData.counter++
+        document.querySelector('#points').innerHTML = this.oData.counter
+    }
+}
+
+class Enemy extends Dot {
     lose() {
-        alert("Lose")
+        alert("You Lose")
     }
 }
 
@@ -131,8 +100,6 @@ let oGame = new MyGame(10, 10)
 let oPlayer = new Player(oGame)
 let oPoint = new Point(oGame, 'point')
 let oEnemy = new Enemy(oGame, 'enemy')
-
-oGame.player = oPlayer
 
 oGame.render()
 oPlayer.highlightCell()
@@ -158,9 +125,10 @@ window.addEventListener("keyup", function (event) {
     oPlayer.highlightCell()
 
     if (oPlayer.currentX == oPoint.x && oPlayer.currentY == oPoint.y) {
+        oPoint.counter()
         oPoint.remove()
         oPoint.create()
-     //   console.log(oGame.points)
+        //   console.log(oGame.points)
     }
     if (oPlayer.currentX == oEnemy.x && oPlayer.currentY == oEnemy.y) {
         oEnemy.lose()

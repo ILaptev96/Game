@@ -1,0 +1,23 @@
+.cell {
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border: 0.5px solid #000;
+}
+
+.row {
+    display: flex;
+}
+
+.player {
+    background-color: blue; 
+}
+
+.point {
+    background-color: green;
+}
+
+#points {
+    font-size: 25px;
+    font-weight: 500;
+}
